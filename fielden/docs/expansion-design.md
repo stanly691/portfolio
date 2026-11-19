@@ -9,3 +9,6 @@ Routes: home → collection with activity/material filters and price sorting →
 24 generated image compositions, including 12 product concepts and alternate views. Two six-second editorial camera-motion loops are supplied as GIF and smaller animated WebP; these animate still compositions, not simulated live action. Visibility and reduced-motion preferences control playback; each loop can be paused.
 
 This is a frontend design concept. No orders, payments, accounts or newsletter submissions are connected. Bag and saved state exist in page memory.
+## Fern palette refinement
+
+Replaced orange with fern #b9c9a2 and pale leaf #d1ddbc; darker moss #516b45 supports text on chalk. Added functional collection/size/bag guidance, price in the selected add-to-bag action, style suitability details and editable-bag reassurance. No fabricated customer reviews, shipping promises or returns guarantees. Sales uplift is a hypothesis, not measured; validate product-to-bag and bag-to-checkout rates once real commerce and consent-aware measurement exist.

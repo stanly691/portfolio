@@ -257,16 +257,16 @@ export function ProductDetails({
           disabled={!size}
           onClick={() => onAdd(size)}
         >
-          {size ? "Add to bag" : "Select your size"}
+          {size ? `Add to bag — £${p.price}` : accessory ? "Choose an option above" : "Select your UK size above"}
         </button>
-        <p className="demo-note">
+        <div className="purchase-confidence"><span>✓ {accessory ? "Your selected option" : "UK sizing clearly labelled"}</span><span>✓ Edit your bag before review</span></div><p className="demo-note">
           Independent design concept · no payment taken.
         </p>
         <div className="product-accordions">
           <details open>
-            <summary>The considered details</summary>
+            <summary>Is this the right style for me?</summary>
             <p>
-              {p.color}. Tonal finishing and a pared-back silhouette. An
+              {p.category === "Outdoors" ? "For an outdoor-inspired wardrobe and days beyond the city." : accessory ? "An everyday finishing touch to pair with your footwear." : "For everyday outfits, from weekday routines to relaxed weekends."} {p.color}. An
               original FIELDEN product concept.
             </p>
           </details>
