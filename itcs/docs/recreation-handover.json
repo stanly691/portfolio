@@ -1,0 +1,516 @@
+{
+  "purpose": "Technical handover for faithfully recreating the existing ITCS design. Reuse the original implementation wherever available. Do not reinterpret this as a new visual direction.",
+  "accuracy": {
+    "confirmed": "Package versions, component names, character source, voice, asset paths, key styling and animation behaviour below come from the previous implementation.",
+    "not_recoverable_from_this_json": "Exact binary assets, the full character rig, recorded audio, original font files and every source-code detail.",
+    "important": "Do not invent character measurements, texture settings or font names where the original values are unavailable."
+  },
+  "original_technology": {
+    "framework": "Vanilla JavaScript ES modules",
+    "build_tool": "Vite",
+    "language": "JavaScript",
+    "styling": "Plain CSS imported by components",
+    "package_versions": {
+      "vite": "^6.4.1",
+      "gsap": "^3.15.0",
+      "three": "^0.187.0",
+      "@playwright/test": "^1.64.1"
+    },
+    "additional_animation": "Browser Web Animations API",
+    "three_loading": "Lazy dynamic import",
+    "original_scripts": {
+      "dev": "vite --host 0.0.0.0",
+      "build": "vite build && node scripts/prepare-pages.js",
+      "preview": "vite preview --host 0.0.0.0"
+    },
+    "deployment": {
+      "original": "GitHub Pages through GitHub Actions",
+      "original_base": "/ITCS-WEB/",
+      "new_repository": "Replace the old deployment base with the new application's actual base.",
+      "asset_handling": "Original HTML passed root-relative href and src attributes through a base-path conversion. Dynamically rendered receipts also applied that conversion."
+    }
+  },
+  "source_files": {
+    "page_composition": [
+      "src/main.js",
+      "src/home-rework.js",
+      "src/home-rework.css",
+      "src/homepage.js",
+      "src/hero.css",
+      "src/style.css"
+    ],
+    "navigation_and_dialogs": [
+      "src/landing-ui.js",
+      "src/landing-ui.css"
+    ],
+    "printer": [
+      "src/service-printer.js",
+      "src/service-printer.css"
+    ],
+    "folder": [
+      "src/service-folder.js",
+      "src/service-folder.css",
+      "src/logo-particles.js"
+    ],
+    "alison": [
+      "src/alison.js",
+      "src/alison.css",
+      "src/alison-avatar.js",
+      "src/alison-scenarios.js"
+    ],
+    "motion": [
+      "src/motion.js",
+      "src/experience.js"
+    ],
+    "media_pipeline": [
+      "scripts/media/build-alison-avatar.py",
+      "scripts/media/generate-alison-voice.mjs"
+    ]
+  },
+  "visual_matching_rules": {
+    "do": [
+      "Match the existing composition before adding anything.",
+      "Use the same ITCS logo asset.",
+      "Use the existing paper-grain SVG.",
+      "Preserve the character's original model proportions.",
+      "Preserve the original voice clips if recoverable.",
+      "Compare desktop and mobile screenshots against the original.",
+      "Keep materials subtle and text readable."
+    ],
+    "do_not": [
+      "Replace Alison with a different stock avatar and call it identical.",
+      "Replace the 3D character with a static image.",
+      "Use a cartoon character.",
+      "Introduce bright multicoloured service stickers.",
+      "Replace the printer with a generic card carousel.",
+      "Add glowing neon effects.",
+      "Turn the receipt into a long vertical panel.",
+      "Render the folder and printer banners together.",
+      "Choose a new font simply because it looks similar."
+    ],
+    "font": {
+      "original_usage": "The page's existing --body CSS variable was used for display and body typography.",
+      "exact_family": "Not confirmed in the retained context. Recover it from the original style.css or font assets.",
+      "receipt_utility_stack": "ui-monospace, SFMono-Regular, Consolas, monospace"
+    }
+  },
+  "colour_tokens": {
+    "main_red": "#ED1C24",
+    "action_red": "#D71922",
+    "hero_background": "#171717",
+    "section_background": "#151517",
+    "menu_surface": "#222225",
+    "light_text": "#F5F5F7",
+    "muted_text": "#B0B0B7",
+    "paper": "#F2F0E8",
+    "receipt_ink": "#27272A",
+    "focus_colour": "#FF7B81",
+    "customer_section": "#EFEFED"
+  },
+  "printer_banner": {
+    "final_direction": "Wide central printer, three service choices on each side, short two-column receipt.",
+    "desktop_structure": {
+      "container": {
+        "max_width": "1440px",
+        "width": "calc(100% - 100px)"
+      },
+      "grid": {
+        "columns": "minmax(0, 1fr) minmax(440px, 540px) minmax(0, 1fr)",
+        "gap": "45px"
+      },
+      "left_services": [
+        "Business IT support",
+        "Cyber security",
+        "Telecoms & broadband"
+      ],
+      "right_services": [
+        "Networks & infrastructure",
+        "Software & websites",
+        "Digital marketing"
+      ],
+      "choice_stack": {
+        "top_padding": "60px",
+        "gap": "15px",
+        "button_min_height": "76px",
+        "title_size": "15px"
+      },
+      "headline": {
+        "text": "Business IT. All connected.",
+        "desktop_size": "clamp(38px, 3.6vw, 50px)",
+        "weight": 500,
+        "line_height": 1.05,
+        "tracking": "-0.065em",
+        "alignment": "center",
+        "colour_split": "Business IT. in white; All connected. in ITCS red."
+      }
+    },
+    "printer_housing": {
+      "height": "60px",
+      "radius": "19px 19px 13px 13px",
+      "background": "linear-gradient(175deg, #F1454C 0%, #DD1824 46%, #A81019 100%)",
+      "shadow": "inset 0 1px 1px #FFB8B8, 0 11px 25px #0006, inset 0 -4px 4px #6B030B55",
+      "label": "ITCS / SERVICE DESK",
+      "label_font": "10px monospaced with 0.12em letter spacing",
+      "status_light": {
+        "diameter": "6px",
+        "colour": "#FFEADB",
+        "glow": "0 0 8px #FFBABA",
+        "behaviour": "Small stepped pulse during printing only."
+      },
+      "slot": {
+        "height": "10px",
+        "left_and_right_inset": "22px",
+        "bottom": "8px",
+        "radius": "7px",
+        "background": "#270B0E",
+        "shadow": "0 1px 0 #FA6873, inset 0 3px 4px #000"
+      }
+    },
+    "paper": {
+      "asset": "public/assets/paper-grain.svg",
+      "background": "#F2F0E8",
+      "text_colour": "#27272A",
+      "desktop_layout": "CSS grid with two equal columns",
+      "column_gap": "25px",
+      "desktop_padding": "21px 24px 20px",
+      "minimum_height": "0; content determines height",
+      "paper_window": {
+        "overflow": "hidden",
+        "top_margin": "-13px",
+        "horizontal_margin": "24px",
+        "bottom_padding": "15px",
+        "shadow": "drop-shadow(0 12px 10px #0004)"
+      },
+      "edge": "CSS polygon clip-path creates a repeating triangular serrated bottom edge.",
+      "texture_rule": "Use the actual SVG. A flat cream rectangle or heavy grunge texture will not match.",
+      "header": {
+        "logo_width": "65px",
+        "logo_treatment": "Original logo with brightness(0) for a monochrome printed appearance.",
+        "right_label": "YOUR BUSINESS. / OUR EXPERTISE.",
+        "separator": "1px dashed neutral rule"
+      },
+      "metadata": {
+        "left": "SERVICE BRIEF",
+        "right": "ITCS / 01 through ITCS / 06",
+        "font_size": "8px",
+        "font_family": "monospace"
+      },
+      "left_column": [
+        "Service title",
+        "Short outcome",
+        "Service description"
+      ],
+      "right_column": [
+        "WHAT WE CAN HELP WITH",
+        "First four capabilities from the service data",
+        "Small check marks aligned to the right"
+      ],
+      "actions_row": {
+        "layout": "Two columns, approximately 1.1fr 1fr",
+        "separator": "Dashed top rule",
+        "primary": "Red contextual enquiry action",
+        "secondary": "View service details",
+        "primary_font_size": "11px"
+      },
+      "footer": {
+        "layout": "Barcode left, small sign-off right",
+        "barcode": "Decorative repeating-linear-gradient",
+        "barcode_size": "110px by 20px",
+        "signoff": "ONE CONNECTED TEAM. SINCE 2004.",
+        "signoff_font_size": "7px"
+      }
+    },
+    "paper_feed_animation": {
+      "api": "Element.animate()",
+      "duration_ms": 2600,
+      "easing": "cubic-bezier(.2,.55,.3,1)",
+      "keyframes": [
+        {
+          "transform": "translateY(-102%)"
+        },
+        {
+          "transform": "translateY(-72%)",
+          "offset": 0.26
+        },
+        {
+          "transform": "translateY(-69%)",
+          "offset": 0.31
+        },
+        {
+          "transform": "translateY(-35%)",
+          "offset": 0.65
+        },
+        {
+          "transform": "translateY(-33%)",
+          "offset": 0.7
+        },
+        {
+          "transform": "translateY(0)"
+        }
+      ],
+      "initial_load": "Call the print function for the default service during component initialisation.",
+      "selection": "Cancel the current animation and completion timer, replace the receipt, then start the new feed.",
+      "clipping": "The paper moves inside an overflow-hidden window beneath the printer housing.",
+      "important": "Do not fade in individual lines. The paper physically emerges with its content already printed.",
+      "reduced_motion": "Skip the animation and immediately show the completed brief.",
+      "motion_preference": "Also respect sessionStorage key itcs-motion with value paused.",
+      "cleanup": "Cancel animations and timers and remove component event listeners."
+    },
+    "responsive_rules": {
+      "801_to_1100px": "Use a 440px central printer, 20px grid gaps and narrower service controls.",
+      "800px_and_below": "Service controls become two columns above the printer. Printer spans both columns.",
+      "mobile_stage_width": "min(100%, 500px)",
+      "mobile_paper_margin": "16px",
+      "380px_and_below": "Receipt becomes one column; actions stack; decorative utility text becomes smaller.",
+      "overflow": "No horizontal page scrolling."
+    }
+  },
+  "folder_backup": {
+    "rendering": "Only when the folder variant is selected, previously with ?hero=folder.",
+    "assets": [
+      "public/assets/itcs-logo.png",
+      "Existing paper and board texture SVG files",
+      "Original folder component styles"
+    ],
+    "material": "Red physical cardboard pocket with real-paper service cards.",
+    "service_cards": "Six stacked cards, each directly selectable.",
+    "logo": "Dotted particle logo by default.",
+    "interaction": "Pointer interaction affects particles; service selection reveals meaningful information.",
+    "reduced_motion": "Static dotted logo.",
+    "important": "Recover the original service-folder and logo-particles implementations for a faithful match. This handover does not contain the full particle algorithm."
+  },
+  "alison_character": {
+    "name": "Alison",
+    "not": "Alice, Alicia or a newly invented character.",
+    "source_model": {
+      "collection": "Microsoft Rocketbox",
+      "character": "Business_Female_04",
+      "original_pipeline": "Character prepared and animated in Blender, then exported as a GLB for Three.js.",
+      "licence": "The previous project included MIT licensing and attribution records. Verify and preserve the supplied licence files.",
+      "local_asset": "public/assets/alison/alison.glb",
+      "last_known_size_bytes": 3553952
+    },
+    "appearance": {
+      "description": "Adult female business character, dark hair, charcoal pinstripe jacket, light inner top and small necklace.",
+      "proportions": "Preserve the source model's native mesh and skeleton proportions.",
+      "exact_measurements": "Not recorded here. Do not invent body height, head ratio, bone lengths or blendshape values.",
+      "framing": "Upper-body portrait with face and hands or torso naturally framed according to viewport.",
+      "background": "Restrained charcoal studio-like surface integrated into the page.",
+      "branding": "Small ITCS logo in the character stage.",
+      "avoid": [
+        "Oversized head",
+        "Cartoon eyes",
+        "Bright costume",
+        "Heavy beauty filters",
+        "Artificial neon lighting",
+        "A new unrelated face"
+      ]
+    },
+    "preparation_pipeline": {
+      "script": "scripts/media/build-alison-avatar.py",
+      "tool": "Blender",
+      "idle": "An idle motion was retargeted onto the source character.",
+      "head_colour_texture_size": "2048px",
+      "normal_map_strength": 0.18,
+      "important": "The exact rig mapping and animation retargeting must come from the script or original GLB."
+    },
+    "three_rendering": {
+      "module": "src/alison-avatar.js",
+      "loading": "Lazy-load the Three.js renderer and GLB.",
+      "exposure": 1.08,
+      "head_material_roughness": 0.62,
+      "jacket_material_roughness": 0.82,
+      "smile_weight": 0.18,
+      "cache_version_used": "studio-3",
+      "exact_camera_and_lights": "Recover from alison-avatar.js; not available with sufficient precision in this handover.",
+      "do_not": "Invent camera positions and claim they match the original."
+    },
+    "animation": {
+      "idle": "Subtle breathing and relaxed body motion.",
+      "eyes": "Blinking.",
+      "head": "Small pointer-aware attention and conversational nodding.",
+      "mouth": "Audio-amplitude-driven mouth movement.",
+      "lip_sync_limit": "This was amplitude-based movement, not a confirmed phoneme or viseme alignment system.",
+      "emotion": "Restrained smile and professional expression.",
+      "performance": "Render while the character stage is visible; avoid continuously rendering an offscreen avatar."
+    },
+    "fallback": {
+      "asset": "public/assets/alison/portrait.png",
+      "origin": "Snapshot captured from the actual Three.js-rendered character.",
+      "last_known_size_bytes": 199217,
+      "usage": "Renderer or model failure only.",
+      "not_allowed": "Using the fallback portrait as the normal desktop experience."
+    }
+  },
+  "alison_voice": {
+    "engine": "Kokoro",
+    "voice_id": "bf_emma",
+    "accent": "British English",
+    "generation": "Offline-generated prerecorded voice clips.",
+    "playback": "Local MP3 files controlled by the page.",
+    "previous_clip_count": 49,
+    "clip_structure": "One greeting plus four Alison responses for each of twelve scenarios.",
+    "greeting_filename": "welcome-0.mp3",
+    "generation_script": "scripts/media/generate-alison-voice.mjs",
+    "pipeline_detail": "A manifest of content hashes allowed unchanged clips to be reused.",
+    "exact_speed_and_engine_parameters": "Recover from the generation script. They are not confirmed here.",
+    "voice_direction": [
+      "Professional",
+      "Warm",
+      "Calm",
+      "Conversational",
+      "Natural British phrasing",
+      "No exaggerated sales delivery"
+    ],
+    "controls": [
+      "Say hello",
+      "Hear Alison",
+      "Mute or voice toggle"
+    ],
+    "playback_rules": [
+      "Start audio only after explicit user interaction.",
+      "Stop the previous clip before playing another.",
+      "Stop audio when the section is left.",
+      "Stop audio when a dialog opens.",
+      "Stop audio when the browser tab becomes hidden.",
+      "Stop audio when the component is disposed."
+    ],
+    "visibility_logic": "Use separate observers for character rendering visibility and the overall Alison section's audio lifecycle."
+  },
+  "alison_interface": {
+    "heading": "Meet Alison. More gets done.",
+    "subheading": "Support. Sales. Everyday operations. One connected part of your team.",
+    "desktop_columns": {
+      "character": "35%",
+      "conversation": "65%"
+    },
+    "conversation_font": "Approximately 15px desktop and 14px mobile",
+    "intro_font": "Approximately 14px desktop and 13px mobile",
+    "controls": "Approximately 12–13px",
+    "transcript_area": "Approximately 280px desktop and 300px mobile in the previous layout",
+    "presentation": [
+      "Four selectable business contexts",
+      "Three examples per context",
+      "Guided customer choices",
+      "Four Alison responses per example",
+      "Restart",
+      "Full transcript",
+      "Expandable workflow notes",
+      "Contextual enquiry action"
+    ],
+    "context_labels": [
+      "Ecommerce",
+      "Estate agency",
+      "IT support",
+      "Sales & operations"
+    ],
+    "channel_labels": [
+      "CHAT CONVERSATION",
+      "PHONE CONVERSATION",
+      "TEAM WORKFLOW"
+    ],
+    "business_name": {
+      "optional": true,
+      "session_storage_key": "itcs-alison-business",
+      "purpose": "Personalise the preview and prefill the enquiry company field."
+    },
+    "transparency": {
+      "label": "Interactive preview",
+      "spoken_style": "Hello, I’m Alison.",
+      "avoid": "Repeatedly saying this is a demo or introducing herself as a virtual assistant.",
+      "limit": "Do not imply that the scripted preview has live CRM, order or telephone access."
+    },
+    "enquiry": {
+      "service_value": "alison",
+      "select_label": "Alison · Business assistant",
+      "message": "I’d like to explore Alison across support, sales and routine workflows for my business."
+    }
+  },
+  "alison_business_logic": {
+    "ecommerce": [
+      "Order tracking through chat",
+      "Complaint handling through voice",
+      "Return intake through voice"
+    ],
+    "estate_agency": [
+      "Viewing enquiries",
+      "Valuation enquiries",
+      "Prospect follow-up"
+    ],
+    "it_support": [
+      "Issue intake",
+      "Ticket updates",
+      "New-starter preparation"
+    ],
+    "sales_and_operations": [
+      "Lead qualification",
+      "Compliance review preparation",
+      "Recurring operational summaries"
+    ],
+    "workflow_notes": [
+      "Information gathered",
+      "Potential connected systems",
+      "Next action",
+      "Human handover or approval"
+    ],
+    "compliance_limit": "Alison gathers evidence and prepares information. A qualified specialist retains approval and judgement."
+  },
+  "navigation_and_accessibility": {
+    "menus": "Disclosure menus for Services, Sectors and About ITCS.",
+    "future_pages": "Disabled destinations until individual pages are developed.",
+    "active_actions": [
+      "Homepage section navigation",
+      "Local service summaries",
+      "Enquiry dialog",
+      "Telephone",
+      "Approved external resources"
+    ],
+    "dialog_implementation": "Native HTML dialog elements in the original project.",
+    "keyboard": [
+      "Visible focus",
+      "Escape closes dialogs and navigation",
+      "Service controls operate without a mouse",
+      "Only one navigation disclosure remains open"
+    ],
+    "motion": [
+      "Respect prefers-reduced-motion",
+      "Respect the page's pause-motion setting",
+      "No continuous decorative scroll effects",
+      "No automatic audio"
+    ]
+  },
+  "recreation_validation": {
+    "first_priority": "Recover original source and assets before approximating.",
+    "visual_checks": [
+      "Same logo proportions",
+      "Same font family",
+      "Same printer housing silhouette",
+      "Same paper grain",
+      "Same two-column receipt composition",
+      "Same dark-and-red balance",
+      "Same character face and outfit",
+      "Same character framing",
+      "Same British voice"
+    ],
+    "interaction_checks": [
+      "Initial paper feed runs once",
+      "All six services print correctly",
+      "Rapid switching leaves the latest receipt visible",
+      "Enquiry preselects the service",
+      "Folder alternative remains available",
+      "Character animates while visible",
+      "Voice stops at the correct time",
+      "Transcripts work without audio",
+      "Mobile layouts do not overflow"
+    ],
+    "existing_test_files": [
+      "scripts/printer-check.cjs",
+      "scripts/homepage-check.cjs",
+      "scripts/alison-check.cjs",
+      "scripts/landing-check.cjs",
+      "scripts/interaction-check.cjs",
+      "scripts/evidence-check.cjs"
+    ]
+  },
+  "instruction_to_the_next_codex": "Treat this as a fidelity task. Inspect /workspace/ITCS-WEB and recover its source, public assets, character GLB, voice clips, textures and licence files if available. Reuse them in the new repository's framework. Do not redesign the page or substitute a different Alison model, voice, paper style or printer composition. Where an original asset or setting cannot be recovered, identify that specific gap rather than claiming an exact recreation."
+}

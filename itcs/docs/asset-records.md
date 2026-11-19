@@ -1,36 +1,43 @@
-# ITCS asset and source records
+# Assets and fidelity record
 
-Checked 19 November 2026. Internal documentation only.
+Internal record, updated 19 November 2026. No research commentary is shown in customer-facing sections.
 
-The starting checkout had only .git metadata, no commits and no remote. The target portfolio repository was reachable through git ls-remote but returned no refs. No pre-existing portfolio code was changed. The previous ssam4243/ITCS-WEB repository and Pages preview could not be recovered.
+## Recovery
 
-## Brand and photography
+The starting checkout had no commits or source. `/workspace/ITCS-WEB` is not available on this Windows machine; `C:/workspace/ITCS-WEB` does not exist. Searches of the available ChatGPT project folders found no service-printer.js, service-folder.js, paper-grain.svg, alison-avatar.js or alison.glb. The old ssam4243/ITCS-WEB repository reports not found and its Pages preview was previously unavailable. The currently authenticated stanly691 account has no old ITCS-WEB repository.
 
-- ITCS logo: https://www.itcs.co.uk/wp-content/uploads/2023/12/itcs-logo-qar0w5sk9gprv6tir7ifplpmi7nex9zgyvbbqvaeps.png . Transparent margins cropped without changing artwork proportions. CSS uses a monochrome version on dark backgrounds.
-- Support desk: https://www.itcs.co.uk/wp-content/uploads/2026/03/IT-Supp-L3.jpg . Converted to WebP. No identity or job title attributed to the pictured person.
-- These are official company assets, not assets for which a new open licence is asserted. Use is limited to this ITCS design experiment. Confirm usage permission before independent production publication.
-- Customer logo image assets were not recovered. The page uses plain customer reference names rather than fabricated logo artwork.
+The supplied handover is retained as `recreation-handover.json`. Its recorded measurements, tokens, timing and known model parameters guide the port; it is not a source or asset backup.
 
-## Alison
+## Official artwork
 
-Microsoft Rocketbox Business_Female_04, recovered from https://github.com/microsoft/Microsoft-Rocketbox . Copyright (c) 2020 Microsoft. MIT licence copied verbatim to docs/licenses/rocketbox-MIT.md and public/assets/alison/LICENSE.txt so the distributed assets retain their licence.
+The current official ITCS homepage was reviewed in the browser, including its image source URLs.
 
-Recovered original facial FBX and body/head diffuse textures from Assets/Avatars/Professions/Business_Female_04. The recovered source is FBX, not the previous project’s unavailable GLB. Three.js loads that rig directly. Textures were reduced to 1024px JPEG. A professional rest pose is applied to the rig. Head attention, breathing, nodding and facial blink targets are animated. Portrait is a load-failure fallback. No recorded voice clips were recovered; the control explains availability without autoplay or an unrelated synthetic voice.
+- White/red logo: https://www.itcs.co.uk/wp-content/uploads/2023/01/White-Logo-Full-Transparent.png
+- Black/red logo: https://www.itcs.co.uk/wp-content/uploads/2025/06/Black-Logo-Full-Transparent.png
+- Genuine customer and certification images: see `public/assets/official/sources.json` for exact official URLs. Customer images are Siderise, Sony UK Technology Centre and Renault.
 
-## Business evidence
+No hand-drawn or generated logo replacements are used. The receipt applies monochrome CSS to official artwork for printed ink. Company artwork remains company-owned, not asserted to be open-licensed. Official contact and certification evidence is recorded in the original brief and handover. The page does not claim independently verified surveillance status or invented customer outcomes.
 
-Official sources checked through indexed official pages when the homepage blocked direct HTML requests:
-- https://www.itcs.co.uk/ — service categories, established 2004, company details, customer accounts.
-- https://www.itcs.co.uk/contact/ — 01656 660 016; Number One, Waterton Park, Waterton, Bridgend CF31 3PH; company number 05251472.
-- https://www.itcs.co.uk/company/iso9001/
-- https://www.itcs.co.uk/company/iso27001/
-- https://www.itcs.co.uk/company/iso14001/
-- https://www.itcs.co.uk/wp-content/uploads/2025/06/ITCS-UK-Ltd-14001.pdf
-- https://www.itcs.co.uk/wp-content/uploads/2024/05/ISO-27001-April-2024.pdf
-- https://www.itcs.co.uk/wp-content/uploads/2024/05/ISO-9001-April-2024.pdf
+## Alison character
 
-Company-published certification claims are current indexed claims, not independent verification of surveillance or accreditation status. Recheck with the certifier before production publication. Quotes are supplied in the brief and attributed to their organisations, without invented results.
+Microsoft Rocketbox Business_Female_04, from https://github.com/microsoft/Microsoft-Rocketbox . Copyright (c) 2020 Microsoft, MIT licence. Original facial FBX: Assets/Avatars/Professions/Business_Female_04/Export/Business_Female_04_facial.fbx. Head/body colour and head normal maps come from that model's Textures directory. Head colour and normal maps are resized to 2048px; body colour is 1024px. No mesh or skeleton proportions were edited. The Three.js coordinate normalisation is uniform.
+
+Confirmed handover settings are applied: 1.08 exposure, .62 head roughness, .82 jacket roughness, .18 normal scale and restrained .18 smile. Current camera placement is tuned for the newly requested chest-up framing, not claimed to match the missing original camera. Blinking and mouth movement use the source facial blendshapes. Mouth movement follows the audio RMS envelope, not phoneme alignment.
+
+Missing: the prepared 3,553,952-byte original GLB, Blender retargeting script/idle and original 199,217-byte rendered fallback snapshot. The current FBX/procedural animation implementation is a documented reconstruction. A real-person or unrelated avatar image is not substituted on failure. MIT notices are present in docs/licenses, assets/licenses and assets/alison/LICENSE.txt.
+
+## Voice
+
+Original recorded MP3s were unavailable. Regenerated locally with Kokoro v1.0 int8 ONNX, voice bf_emma, en-gb, speed 1.0: 49 clips (one greeting, four responses for each of twelve scenarios). The original exact generation speed is unknown. The generator records SHA-256 content/settings hashes, audio durations and 40ms RMS envelopes. Weights and voice bundle stay in ignored `.cache/voice` and are not deployed.
+
+Sources: https://huggingface.co/hexgrad/Kokoro-82M and https://github.com/thewh1teagle/kokoro-onnx . Model Apache-2.0 and runtime MIT notices are retained. No runtime speech API, analytics, microphone or third-party account access is used.
+
+## Graphics and typography
+
+The printer and connected-services illustration are original SVG code. The housing dimensions, colour stops, spacing and paper feed now follow the handover. The original `paper-grain.svg` is missing; the vector paper surface is an approximation. The original folder board/paper textures and particle algorithm are also missing; the retained folder uses reconstructed shading and a pointer-responsive dotted official logo. No generated device photos, raster paper textures or photographs of real people are shipped.
+
+The original --body font family/files were not recovered. The repository's Arial/Helvetica/system sans fallback is retained rather than asserting a similar new font is original. Receipt metadata uses the documented system monospace stack. This remains a fidelity gap, not an exact font match.
 
 ## Boundaries
 
-No live enquiry backend, AI service, account lookup, microphone, tracking cookies or analytics. Business name uses session storage only. Guided conversations use illustrative records. Human approvals and qualified compliance decisions are retained.
+Enquiries are local previews. Alison conversations use illustrative records. Human approvals and qualified compliance decisions remain with people. The optional business name uses sessionStorage itcs-alison-business; motion uses itcs-motion. No live backend or AI integration is implied.

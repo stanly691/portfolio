@@ -4,6 +4,6 @@
   "type": "module",
   "scripts": {
     "dev": "npm --prefix itcs run dev -- --base=/itcs/",
-    "build": "node scripts/restore-assets.mjs && npm --prefix itcs run build && node scripts/build-portfolio.mjs"
+    "build": "npm --prefix itcs run build && node scripts/build-portfolio.mjs"
   }
 }

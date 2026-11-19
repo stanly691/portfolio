@@ -1,9 +1,17 @@
 # Portfolio
 
-Project source is kept in its own folder:
+Projects live in their own folders. The ITCS experiment is a React + TypeScript application built by Vite, with a lazy Three.js character renderer.
 
-- [ITCS website experiment](itcs/) — hosted at `/portfolio/itcs/`.
+- Website: https://stanly691.github.io/portfolio/itcs/
+- Design system: https://stanly691.github.io/portfolio/itcs/design-system/
+- Folder alternative: https://stanly691.github.io/portfolio/itcs/?hero=folder
 
-Install with `npm ci --prefix itcs`, run locally with `npm run dev`, and build the complete portfolio with `npm run build`. The GitHub Pages workflow publishes the root project index and each built project.
+```sh
+npm ci --prefix itcs
+npm run dev
+npm run build
+```
 
-Official image and character binary assets have text `.base64` copies for connector-based source transport. `scripts/restore-assets.mjs` restores them before building. Microsoft’s MIT licence accompanies the character in the deployed assets.
+The build runs TypeScript checks and packages the root index with `itcs/dist` under `dist/itcs`. The Pages workflow publishes this output on pushes to main. Binary media are stored directly in the repository; no API keys or external voice service are needed at runtime.
+
+See `itcs/docs/design-system/MASTER.md` for the recreation specification and `itcs/docs/asset-records.md` for source recovery, licences and known fidelity gaps.

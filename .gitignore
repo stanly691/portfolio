@@ -4,8 +4,5 @@ playwright-report/
 test-results/
 *.log
 
-itcs/public/**/*.png
-itcs/public/**/*.jpg
-itcs/public/**/*.webp
-itcs/public/**/*.fbx
 itcs/docs/screenshots/
+.cache/
