@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   products,
   stories,
@@ -7,15 +7,54 @@ import {
   type StoryKey,
 } from "./data";
 import { Icon, Modal, Photo } from "./ui";
+import { ProductCard, ProductDetails, ShopMenu } from "./Shop";
+import {
+  ActivityEdit,
+  CoastCampaign,
+  DetailStudy,
+  MotionPhoto,
+} from "./Editorial";
+
 
 export default function App() {
-  const [filter, setFilter] = useState("All");
-  const [audience, setAudience] = useState("");
+  const readLocation = () => {
+    const q = new URLSearchParams(location.search);
+    return {
+      collection: q.has("collection"),
+      audience: ["Women", "Men"].includes(q.get("collection") || "")
+        ? q.get("collection")!
+        : "",
+      category: ["Everyday", "Outdoors", "Accessories", "Saved"].includes(
+        q.get("category") || "",
+      )
+        ? q.get("category")!
+        : "All",
+    };
+  };
+  const [collectionPage, setCollectionPage] = useState(
+    () => readLocation().collection,
+  );
+  const [filter, setFilter] = useState(() => readLocation().category);
+  const [sort, setSort] = useState("featured");
+  const [material, setMaterial] = useState("All materials");
+  const [maxPrice, setMaxPrice] = useState("Any price");
+  useEffect(() => {
+    const sync = () => {
+      const x = readLocation();
+      setCollectionPage(x.collection);
+      setAudience(x.audience);
+      setFilter(x.category);
+      setMaterial("All materials");
+      setMaxPrice("Any price");
+    };
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, []);
+  const [audience, setAudience] = useState(() => readLocation().audience);
   const [menu, setMenu] = useState(false);
   const [search, setSearch] = useState(false);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<Product | null>(null);
-  const [size, setSize] = useState("");
   const [bagOpen, setBagOpen] = useState(false);
   const [bag, setBag] = useState<{ product: Product; size: string }[]>([]);
   const [saved, setSaved] = useState<string[]>([]);
@@ -23,27 +62,70 @@ export default function App() {
   const [info, setInfo] = useState<string | null>(null);
   const [subscribed, setSubscribed] = useState(false);
   const [notice, setNotice] = useState("");
-  const shown = products.filter(
+  const filtered = products.filter(
     (p) =>
-      filter === "All" ||
-      (filter === "Saved" ? saved.includes(p.id) : p.category === filter),
+      (filter === "All" ||
+        (filter === "Saved" ? saved.includes(p.id) : p.category === filter)) &&
+      (!audience || p.category !== "Accessories") &&
+      (material === "All materials" ||
+        p.color.toLowerCase().includes(material.toLowerCase())) &&
+      (maxPrice === "Any price" || p.price <= Number(maxPrice)),
   );
+  const sorted = [...filtered].sort((a, b) =>
+    sort === "low"
+      ? a.price - b.price
+      : sort === "high"
+        ? b.price - a.price
+        : sort === "name"
+          ? a.name.localeCompare(b.name)
+          : 0,
+  );
+  const shown = collectionPage ? sorted : sorted.slice(0, 8);
   function browse(value = "", category = "All") {
     setAudience(value);
     setFilter(category);
+    setMaterial("All materials");
+    setMaxPrice("Any price");
+    setCollectionPage(true);
     setMenu(false);
-    document
-      .getElementById("collection")
-      ?.scrollIntoView({
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? "instant"
-          : "smooth",
-      });
+    const q = new URLSearchParams({ collection: value || "all" });
+    if (category !== "All") q.set("category", category);
+    history.pushState({}, "", location.pathname + "?" + q.toString());
+    requestAnimationFrame(() =>
+      window.scrollTo({ top: 0, behavior: "instant" }),
+    );
+  }
+  function home(section = "") {
+    setCollectionPage(false);
+    setAudience("");
+    setFilter("All");
+    setMaterial("All materials");
+    setMaxPrice("Any price");
+    setMenu(false);
+    history.pushState(
+      {},
+      "",
+      location.pathname + (section ? "#" + section : ""),
+    );
+    requestAnimationFrame(() => {
+      if (section) document.getElementById(section)?.scrollIntoView();
+      else window.scrollTo({ top: 0, behavior: "instant" });
+    });
   }
   function view(p: Product) {
     setSelected(p);
-    setSize("");
     setSearch(false);
+  }
+  function changeFilter(next: string) {
+    setFilter(next);
+    if (next === "Accessories") setAudience("");
+    if (collectionPage) {
+      const q = new URLSearchParams(location.search);
+      q.set("collection", next === "Accessories" ? "all" : audience || "all");
+      if (next === "All") q.delete("category");
+      else q.set("category", next);
+      history.replaceState({}, "", location.pathname + "?" + q.toString());
+    }
   }
   function favorite(p: Product) {
     setSaved((old) =>
@@ -52,17 +134,24 @@ export default function App() {
   }
   const nav = (
     <>
+      <ShopMenu browse={browse} />
       <button onClick={() => browse()}>New arrivals</button>
       <button onClick={() => browse("Women")}>Women</button>
       <button onClick={() => browse("Men")}>Men</button>
       <button onClick={() => setStory("philosophy")}>Our philosophy</button>
-      <a href="#journal" onClick={() => setMenu(false)}>
+      <a
+        href="#journal"
+        onClick={(e) => {
+          e.preventDefault();
+          home("journal");
+        }}
+      >
         Field notes
       </a>
     </>
   );
   return (
-    <>
+    <div className={collectionPage ? "site-shell is-collection" : "site-shell"}>
       <a className="skip-link" href="#main">
         Skip to content
       </a>
@@ -78,8 +167,16 @@ export default function App() {
         >
           <Icon name="menu" />
         </button>
-        <a className="wordmark" href="#" aria-label="FIELDEN home">
-          fielden<span>®</span>
+        <a
+          className="wordmark"
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            home();
+          }}
+          aria-label="FIELDEN home"
+        >
+          fielden<span>™</span>
         </a>
         <nav aria-label="Main navigation">{nav}</nav>
         <div className="header-tools">
@@ -110,6 +207,51 @@ export default function App() {
         </div>
       </header>
       <main id="main">
+        {collectionPage && (
+          <section className="collection-intro">
+            <div className="collection-intro-copy">
+              <p className="breadcrumbs">
+                <button onClick={() => home()}>Home</button>
+                <span>/</span>
+                {audience || "The collection"}
+              </p>
+              <p className="eyebrow">The considered collection</p>
+              <h1>
+                {filter === "Accessories"
+                  ? "The finishing touches."
+                  : filter === "Outdoors"
+                    ? "A little further out."
+                    : audience
+                      ? audience + "’s collection."
+                      : "Everyday, and beyond."}
+              </h1>
+              <p>
+                Familiar shapes. Beautiful materials. Find the pieces that feel
+                like you.
+              </p>
+              <span className="collection-size-note">
+                {audience
+                  ? "All footwear styles are unisex. Explore the edit your way."
+                  : "Twelve considered styles for a life well wandered."}
+              </span>
+            </div>
+            <Photo
+              name={
+                filter === "Accessories"
+                  ? "weekend"
+                  : filter === "Outdoors"
+                    ? "forest"
+                    : audience === "Women"
+                      ? "women"
+                      : audience === "Men"
+                        ? "men"
+                        : "city"
+              }
+              alt="The FIELDEN seasonal collection"
+              hero
+            />
+          </section>
+        )}
         <section className="hero" aria-labelledby="hero-title">
           <Photo
             name="hero"
@@ -180,13 +322,7 @@ export default function App() {
                   : "Meet your new essentials."}
               </h2>
             </div>
-            <button
-              className="text-link"
-              onClick={() => {
-                setFilter("All");
-                setAudience("");
-              }}
-            >
+            <button className="text-link" onClick={() => browse()}>
               View the collection
             </button>
           </div>
@@ -195,12 +331,13 @@ export default function App() {
               "All",
               "Everyday",
               "Outdoors",
+              "Accessories",
               ...(saved.length || filter === "Saved" ? ["Saved"] : []),
             ].map((x) => (
               <button
                 key={x}
                 className={filter === x ? "active" : ""}
-                onClick={() => setFilter(x)}
+                onClick={() => changeFilter(x)}
                 aria-pressed={filter === x}
               >
                 {x === "All" ? "The full edit" : x}
@@ -209,63 +346,80 @@ export default function App() {
             ))}
             <span>{shown.length} considered styles</span>
           </div>
+          {collectionPage && (
+            <div className="shop-toolbar">
+              <div className="shop-filters">
+                <label>
+                  Material
+                  <select
+                    aria-label="Material"
+                    value={material}
+                    onChange={(e) => setMaterial(e.target.value)}
+                  >
+                    {[
+                      "All materials",
+                      "Suede",
+                      "Leather",
+                      "Canvas",
+                      "Ripstop",
+                    ].map((x) => (
+                      <option key={x}>{x}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Price
+                  <select
+                    aria-label="Price"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                  >
+                    <option value="Any price">Any price</option>
+                    <option value="100">Up to £100</option>
+                    <option value="150">Up to £150</option>
+                    <option value="200">Up to £200</option>
+                  </select>
+                </label>
+              </div>
+              <label>
+                Sort by
+                <select aria-label="Sort by" value={sort} onChange={(e) => setSort(e.target.value)}>
+                  <option value="featured">Featured</option>
+                  <option value="low">Price: low to high</option>
+                  <option value="high">Price: high to low</option>
+                  <option value="name">Name</option>
+                </select>
+              </label>
+            </div>
+          )}
           <div className="product-grid">
             {shown.map((p) => (
-              <article className="product" key={p.id}>
-                <div className="product-image">
-                  <span className="product-tag">{p.tag}</span>
-                  <button
-                    className={`icon-button favorite ${saved.includes(p.id) ? "is-saved" : ""}`}
-                    aria-label={`${saved.includes(p.id) ? "Unsave" : "Save"} ${p.name}`}
-                    aria-pressed={saved.includes(p.id)}
-                    onClick={() => favorite(p)}
-                  >
-                    <Icon name="heart" />
-                  </button>
-                  <button
-                    className="product-photo"
-                    aria-label={`View ${p.name}`}
-                    onClick={() => view(p)}
-                  >
-                    <Photo
-                      name={p.image}
-                      alt={`${p.name} in ${p.color}`}
-                      sizes="(max-width: 700px) 50vw, 25vw"
-                    />
-                  </button>
-                  <button className="quick-view" onClick={() => view(p)}>
-                    Discover the details <Icon name="plus" />
-                  </button>
-                </div>
-                <div className="product-title">
-                  <h3>
-                    <button onClick={() => view(p)}>{p.name}</button>
-                  </h3>
-                  <span>£{p.price}</span>
-                </div>
-                <p className="product-colour">{p.color}</p>
-                <div
-                  className="swatches"
-                  aria-label={`Colour direction: ${p.color}`}
-                >
-                  {p.colors.map((c, i) => (
-                    <span
-                      key={c}
-                      className={i === 0 ? "current" : ""}
-                      style={{ backgroundColor: c }}
-                    />
-                  ))}
-                </div>
-              </article>
+              <ProductCard
+                key={p.id}
+                product={p}
+                saved={saved.includes(p.id)}
+                onSave={() => favorite(p)}
+                onView={() => view(p)}
+              />
             ))}
           </div>
+          {!collectionPage && (
+            <div className="view-all-row">
+              <p>Good things, in good company.</p>
+              <button className="button dark" onClick={() => browse()}>
+                Explore all {products.length} styles
+              </button>
+            </div>
+          )}
           {shown.length === 0 && (
             <p className="empty-state">
-              Your favourites will feel at home here. Select a heart to save a
-              style.
+              {filter === "Saved"
+                ? "Your favourites will feel at home here. Select a heart to save a style."
+                : "No styles match this combination. Try another material or price."}
             </p>
           )}
         </section>
+        <ActivityEdit browse={browse} />
         <section className="category-grid" aria-label="Explore the collections">
           <article className="category">
             <Photo
@@ -300,11 +454,14 @@ export default function App() {
             </div>
           </article>
         </section>
+        <CoastCampaign browse={browse} />
+        <DetailStudy />
         <section className="material-story" id="materials">
           <div className="material-image">
-            <Photo
-              name="craft"
-              alt="A close study of warm suede, fine stitching and a gum sole on limestone"
+            <MotionPhoto
+              name="craft-loop"
+              poster="craft"
+              alt="A slow editorial close-up of suede, cotton laces and fine stitching"
             />
           </div>
           <div className="material-copy">
@@ -346,6 +503,45 @@ export default function App() {
             <Icon name="sun" />
             <h3>For more of the everyday.</h3>
             <p>Familiar favourites, thoughtfully refined.</p>
+          </div>
+        </section>
+        <section className="weekend-edit section-pad">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">The things you take with you</p>
+              <h2>A well-considered weekend.</h2>
+            </div>
+            <button
+              className="text-link"
+              onClick={() => browse("", "Accessories")}
+            >
+              Explore accessories
+            </button>
+          </div>
+          <div className="weekend-edit-grid">
+            <button
+              className="weekend-campaign"
+              onClick={() => browse("", "Accessories")}
+            >
+              <Photo
+                name="weekend"
+                alt="Canvas, soft wool and everyday essentials packed for the weekend"
+              />
+              <span>Pack lightly. Go freely.</span>
+            </button>
+            <div className="weekend-products">
+              {products
+                .filter((p) => p.category === "Accessories")
+                .map((p) => (
+                  <ProductCard
+                    key={p.id}
+                    product={p}
+                    saved={saved.includes(p.id)}
+                    onSave={() => favorite(p)}
+                    onView={() => view(p)}
+                  />
+                ))}
+            </div>
           </div>
         </section>
         <section className="journal section-pad" id="journal">
@@ -457,7 +653,15 @@ export default function App() {
               Our philosophy
             </button>
             <button onClick={() => setStory("materials")}>Materials</button>
-            <a href="#journal">Field notes</a>
+            <a
+              href="#journal"
+              onClick={(e) => {
+                e.preventDefault();
+                home("journal");
+              }}
+            >
+              Field notes
+            </a>
           </div>
           <div>
             <h3>Here to help</h3>
@@ -475,6 +679,10 @@ export default function App() {
         <a
           className="footer-wordmark"
           href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            home();
+          }}
           aria-label="Back to FIELDEN home"
         >
           fielden<span>®</span>
@@ -494,7 +702,7 @@ export default function App() {
         label="navigation"
         className="menu-modal"
       >
-        <a className="wordmark" href="#" onClick={() => setMenu(false)}>
+        <a className="wordmark" href="#" onClick={(e) => { e.preventDefault(); home(); }}>
           fielden
         </a>
         <nav aria-label="Mobile navigation">{nav}</nav>
@@ -544,53 +752,19 @@ export default function App() {
         className="product-modal"
       >
         {selected && (
-          <>
-            <Photo
-              name={selected.image}
-              alt={`${selected.name} in ${selected.color}`}
-            />
-            <div className="product-detail">
-              <p className="eyebrow">{selected.tag}</p>
-              <h2>{selected.name}</h2>
-              <p className="detail-price">£{selected.price}</p>
-              <p>{selected.description}</p>
-              <p className="detail-colour">{selected.color}</p>
-              <fieldset>
-                <legend>Choose your UK size</legend>
-                <div className="size-options">
-                  {["4", "5", "6", "7", "8", "9", "10", "11"].map((x) => (
-                    <button
-                      type="button"
-                      key={x}
-                      className={size === x ? "selected" : ""}
-                      aria-pressed={size === x}
-                      onClick={() => setSize(x)}
-                    >
-                      {x}
-                    </button>
-                  ))}
-                </div>
-              </fieldset>
-              <button
-                className="button dark add-bag"
-                disabled={!size}
-                onClick={() => {
-                  setBag((old) => [...old, { product: selected, size }]);
-                  setNotice(
-                    `${selected.name}, size ${size}, added to your preview bag.`,
-                  );
-                  setSelected(null);
-                  setBagOpen(true);
-                }}
-              >
-                {" "}
-                {size ? "Add to bag" : "Select your size"}
-              </button>
-              <p className="demo-note">
-                Design preview · illustrative products and prices.
-              </p>
-            </div>
-          </>
+          <ProductDetails
+            key={selected.id}
+            product={selected}
+            onAdd={(chosenSize) => {
+              setBag((old) => [
+                ...old,
+                { product: selected, size: chosenSize },
+              ]);
+              setNotice(selected.name + " added to your preview bag.");
+              setSelected(null);
+              setBagOpen(true);
+            }}
+          />
         )}
       </Modal>
       <Modal
@@ -626,7 +800,10 @@ export default function App() {
                   <div>
                     <h3>{item.product.name}</h3>
                     <p>
-                      {item.product.color} · UK {item.size}
+                      {item.product.color} ·{" "}
+                      {item.product.category === "Accessories"
+                        ? item.size
+                        : "UK " + item.size}
                     </p>
                     <button
                       className="text-link"
@@ -716,6 +893,6 @@ export default function App() {
           </p>
         )}
       </Modal>
-    </>
+    </div>
   );
 }
