@@ -8,4 +8,5 @@ await rm(output, { recursive: true, force: true });
 await mkdir(resolve(output, "itcs"), { recursive: true });
 await cp("index.html", resolve(output, "index.html"));
 await cp("itcs/dist", resolve(output, "itcs"), { recursive: true });
+await cp("fielden/dist", resolve(output, "fielden"), { recursive: true });
 await writeFile(resolve(output, ".nojekyll"), "");

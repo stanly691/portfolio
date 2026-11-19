@@ -19,8 +19,11 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: itcs/package-lock.json
+          cache-dependency-path: |
+            itcs/package-lock.json
+            fielden/package-lock.json
       - run: npm ci --prefix itcs
+      - run: npm ci --prefix fielden
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
