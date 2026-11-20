@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "npm --prefix itcs run dev -- --base=/itcs/",
-    "build": "npm --prefix itcs run build && npm --prefix fielden run build && node scripts/build-portfolio.mjs",
-    "dev:fielden": "npm --prefix fielden run dev"
+    "build": "npm --prefix itcs run build && npm --prefix fielden run build && npm --prefix serein run build && node scripts/build-portfolio.mjs",
+    "dev:fielden": "npm --prefix fielden run dev",
+    "dev:serein": "npm --prefix serein run dev"
   }
 }

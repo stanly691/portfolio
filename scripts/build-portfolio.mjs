@@ -9,4 +9,5 @@ await mkdir(resolve(output, "itcs"), { recursive: true });
 await cp("index.html", resolve(output, "index.html"));
 await cp("itcs/dist", resolve(output, "itcs"), { recursive: true });
 await cp("fielden/dist", resolve(output, "fielden"), { recursive: true });
+await cp("serein/dist", resolve(output, "serein"), { recursive: true });
 await writeFile(resolve(output, ".nojekyll"), "");

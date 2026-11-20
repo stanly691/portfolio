@@ -22,8 +22,10 @@ jobs:
           cache-dependency-path: |
             itcs/package-lock.json
             fielden/package-lock.json
+            serein/package-lock.json
       - run: npm ci --prefix itcs
       - run: npm ci --prefix fielden
+      - run: npm ci --prefix serein
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
