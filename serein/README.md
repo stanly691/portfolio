@@ -12,3 +12,10 @@ Home, collection filters, four product detail pages, two room concepts, brand ap
 
 ## Images
 Six images generated with the built-in image-generation tool. Exact prompts and source paths are preserved in docs/assets.json. Final responsive assets are saved in public/images/*.webp. Regenerate optimized sizes with node docs/prepare-images.mjs while original source files remain available. Generated imagery represents concepts, not installed projects or real products.
+## Editorial identity revision
+
+Replaced the previous Cormorant/sage direction with Bodoni Moda editorial typography, original hand-drawn SVG SEREIN letterforms in src/Signature.tsx, oxblood #4b252a, warm ivory #f5f1e9 and walnut tones. The SVG is a custom wordmark, not a complete new font. All headline/body typeface licenses are retained.
+
+Rebuilt the homepage with the original Nocturne campaign image, asymmetric introduction, staggered large-format products, an interactive three-material study, a dramatic architectural feature, and an oversized wordmark. Shared typography, controls and palette continue through collection, product, room, shortlist and brief pages.
+
+New image generated with the built-in image-generation tool; exact prompt and source are in docs/nocturne-asset.json. Final assets: public/images/hero-nocturne.webp and hero-nocturne-small.webp.
