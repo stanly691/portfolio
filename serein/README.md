@@ -19,3 +19,8 @@ Replaced the previous Cormorant/sage direction with Bodoni Moda editorial typogr
 Rebuilt the homepage with the original Nocturne campaign image, asymmetric introduction, staggered large-format products, an interactive three-material study, a dramatic architectural feature, and an oversized wordmark. Shared typography, controls and palette continue through collection, product, room, shortlist and brief pages.
 
 New image generated with the built-in image-generation tool; exact prompt and source are in docs/nocturne-asset.json. Final assets: public/images/hero-nocturne.webp and hero-nocturne-small.webp.
+## Editorial interactions
+
+Added a recurring original S/water-line atelier seal and matching favicon; an editorial typographic interlude; sticky frosted navigation with reading progress; user-controlled Garden/Nocturne photography; restrained blur-to-focus image reveals; collection hover invitations; animated material changes; and a keyboard-accessible detail magnification slider. No autoplay cycling, sound, cursor replacement or scroll hijacking. Reduced-motion preferences disable reveal animations and transitions. Body text and functional labels remain sharp.
+
+Verified atmosphere switching, detail toggle, slider arrow-key adjustment, mobile menu and 390px overflow. TypeScript and production build passed.
